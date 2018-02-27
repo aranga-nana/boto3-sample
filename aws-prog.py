@@ -11,6 +11,10 @@ for r in reservations['Reservations']:
             print(t['Key'],":", t['Value'],"\n")
 
 
-client = boto3.client('autoscaling',region_name='ap-southeast-2')
-for a in clinet.describe_policies():
-    print(a)
+
+autoscale = boto3.client('autoscaling',region_name='ap-southeast-2')
+response = autoscale.describe_auto_scaling_groups()
+name=response['AutoScalingGroups'][0]['AutoScalingGroupName']
+response = autoscale.suspend_processes(AutoScalingGroupName=name)
+#response = autoscale.resume_processes(AutoScalingGroupName=name)
+print(response)
