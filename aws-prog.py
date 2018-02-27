@@ -1,21 +1,16 @@
 import boto3
-import json
-ec2 = boto3.client('ec2')
-response = ec2.describe_instances()
-r=response['Reservations']
-for i in r:
-    instances = i["Instances"][0]
-    print(instances["InstanceId"])
+
+ec2 = boto3.client('ec2',region_name='ap-southeast-2')
+filters = [{'Name': 'tag:Name', 'Values': ['linear.bau*'] }]
+reservations=ec2.describe_instances(Filters=filters)
+for r in reservations['Reservations']:
+    for i in r['Instances']:
+        print(i['InstanceId'])
+        tags =i['Tags']
+        for t in tags:
+            print(t['Key'],":", t['Value'],"\n")
 
 
-dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('docker_keys')
-
-response = table.get_item(
-    Key={
-        'key': 'manager'
-    }
-)
-
-item = response['Item']
-print(item['value'])
+client = boto3.client('autoscaling',region_name='ap-southeast-2')
+for a in clinet.describe_policies():
+    print(a)
